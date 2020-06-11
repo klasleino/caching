@@ -3,7 +3,7 @@ import unittest
 
 from unittest import TestCase
 
-from cachable import Cachable
+from cachable import Cachable, CachableParam
 
 
 class UnitTest(TestCase):
@@ -207,6 +207,53 @@ class UnitTest(TestCase):
 
         # Make sure the function body was not run.
         self.assertEqual(t.counter, 1)
+
+
+    def test_with_cachable_params(self):
+
+        @CachableParam()
+        class P(object):
+            def __init__(self, a, b, c=3):
+                self.counter = 0
+
+        class F(object):
+            def __init__(self):
+                self.counter = 0
+
+            @Cachable('f', self.dir, debug=True)
+            def __call__(self, p, x):
+                self.counter += 1
+                return []
+
+        f = F()
+
+        res = f(P(1, 2, 3), 4)
+
+        self.assertEqual(res.obj, [])
+
+        # Make sure the function body was run.
+        self.assertEqual(f.counter, 1)
+
+        # Make sure the file was created without 'c' in the filename.
+        self.assertTrue(os.path.exists(res._filename + '.pkl'))
+        self.assertTrue('P' in res._name)
+        self.assertTrue('a-1' in res._name)
+        self.assertTrue('b-2' in res._name)
+        self.assertTrue('c' not in res._name)
+
+        res = f(P(1, 2, 3), 4)
+
+        self.assertEqual(res.obj, [])
+
+        # Make sure the function body was not run.
+        self.assertEqual(f.counter, 1)
+
+        res = f(P(1, 2, 4), 4)
+
+        self.assertEqual(res.obj, [])
+
+        # Make sure the function body was run.
+        self.assertEqual(f.counter, 2)
 
 
 if __name__ == '__main__':

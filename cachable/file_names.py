@@ -36,12 +36,15 @@ class Namer(object):
 
 
     def filename_for_args(self, args):
+        if self.directory is None:
+            raise ValueError('Need to configure `directory`.')
+
         return '{}/{}'.format(self.directory, self.name_for_args(args))
 
 
     def name_for_args(self, args):
-        if self.directory is None or self.name is None:
-            raise ValueError('Need to configure `directory` and `name`.')
+        if self.name is None:
+            raise ValueError('Need to configure `name`.')
 
         name = [self.name]
 
