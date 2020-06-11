@@ -1,1 +1,1 @@
-from cachable_functions import CachableDef
+from cachable_functions import Cachable

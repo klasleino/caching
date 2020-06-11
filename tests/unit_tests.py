@@ -3,7 +3,7 @@ import unittest
 
 from unittest import TestCase
 
-from cachable import CachableDef
+from cachable import Cachable
 
 
 class UnitTest(TestCase):
@@ -23,7 +23,7 @@ class UnitTest(TestCase):
 
     def test_basic(self):
 
-        @CachableDef('f', self.dir, debug=True)
+        @Cachable('f', self.dir, debug=True)
         def f(a, b, c):
             c[0] += 1
             return dict(a=a, b=b, c=c)
@@ -57,7 +57,7 @@ class UnitTest(TestCase):
 
     def test_default_args(self):
 
-        @CachableDef('f', self.dir, debug=True)
+        @Cachable('f', self.dir, debug=True)
         def f(a, b, c=3):
             b[0] += 1
             return dict(a=a, b=b, c=c)
@@ -137,7 +137,7 @@ class UnitTest(TestCase):
             def __init__(self):
                 self.counter = 0
 
-            @CachableDef('f', self.dir, debug=True)
+            @Cachable('f', self.dir, debug=True)
             def f(self, a, b, c=3):
                 self.counter += 1
                 return dict(a=a, b=b, c=c)
@@ -183,7 +183,7 @@ class UnitTest(TestCase):
             def __init__(self):
                 self.counter = 0
 
-            @CachableDef('f', self.dir, debug=True)
+            @Cachable('f', self.dir, debug=True)
             def f(self):
                 self.counter += 1
                 return []
