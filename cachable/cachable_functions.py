@@ -76,14 +76,15 @@ class CachableDef(object):
 
             # Get the args that should affect the file name.
 
-            # Add the args if they are not taking on their default value or 
-            # marked to be ignored.
+            # Add the args if they are not taking on their default value, marked
+            # to be ignored, or `self`.
             name_changing_args = {
                 self.arg_names[i]: arg 
                 for i, arg in enumerate(args)
-                if not self.arg_names[i].startswith('_') and (
-                    self.arg_names[i] not in self.defaults or 
-                    self.defaults[self.arg_names[i]] != arg)
+                if not self.arg_names[i].startswith('_') and 
+                    not self.arg_names[i] == 'self' and (
+                        self.arg_names[i] not in self.defaults or 
+                        self.defaults[self.arg_names[i]] != arg)
             }
 
             # Add the kwargs if they are not taking on their default value.
@@ -98,7 +99,8 @@ class CachableDef(object):
             all_args = {
                 self.arg_names[i]: arg 
                 for i, arg in enumerate(args)
-                if not self.arg_names[-num_defaults + i].startswith('_')
+                if not self.arg_names[i].startswith('_') and
+                    not self.arg_names[i] == 'self'
             }
 
             for kw in name_changing_args:

@@ -130,5 +130,84 @@ class UnitTest(TestCase):
         self.assertEqual(b[0], 2)
 
 
+    def test_member_function(self):
+
+        class T(object):
+
+            def __init__(self):
+                self.counter = 0
+
+            @CachableDef('f', self.dir, debug=True)
+            def f(self, a, b, c=3):
+                self.counter += 1
+                return dict(a=a, b=b, c=c)
+
+        t = T()
+
+        res = t.f(6, b=9, c=3)
+
+        self.assertEqual(res.obj['a'], 6)
+        self.assertEqual(res.obj['b'], 9)
+        self.assertEqual(res.obj['c'], 3)
+
+        # Make sure the function body was run.
+        self.assertEqual(t.counter, 1)
+
+        # Make sure the file was created without 'c' in the filename.
+        self.assertTrue(os.path.exists(res._filename + '.pkl'))
+        self.assertFalse('c' in res._name)
+
+        res = t.f(6, 9)
+
+        self.assertEqual(res.obj['a'], 6)
+        self.assertEqual(res.obj['b'], 9)
+        self.assertEqual(res.obj['c'], 3)
+
+        # Make sure the function body was not run.
+        self.assertEqual(t.counter, 1)
+
+        res = t.f(b=2, c=3, a=1)
+
+        self.assertEqual(res.obj['a'], 1)
+        self.assertEqual(res.obj['b'], 2)
+        self.assertEqual(res.obj['c'], 3)
+
+        # Make sure the function body was run.
+        self.assertEqual(t.counter, 2)
+
+
+    def test_member_function_no_args(self):
+
+        class T(object):
+
+            def __init__(self):
+                self.counter = 0
+
+            @CachableDef('f', self.dir, debug=True)
+            def f(self):
+                self.counter += 1
+                return []
+
+        t = T()
+
+        res = t.f()
+
+        self.assertEqual(res.obj, [])
+
+        # Make sure the function body was run.
+        self.assertEqual(t.counter, 1)
+
+        # Make sure the file was created without 'c' in the filename.
+        self.assertTrue(os.path.exists(res._filename + '.pkl'))
+        self.assertTrue(res._name == 'f')
+
+        res = t.f()
+
+        self.assertEqual(res.obj, [])
+
+        # Make sure the function body was not run.
+        self.assertEqual(t.counter, 1)
+
+
 if __name__ == '__main__':
     unittest.main() 
