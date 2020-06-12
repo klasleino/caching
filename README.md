@@ -133,7 +133,7 @@ from cachable import Cachable
 from cachable.loaders import KerasModelLoader
 
 @Cachable(name='my_cached_model', directory='cache', loader=KerasModelLoader())
-def create_and_train_model(model_hyperparameters):
+def create_and_train_model(**model_hyperparameters):
     # Create and train a model...
     return model
 ```
