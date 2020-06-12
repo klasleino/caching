@@ -46,7 +46,7 @@ class Namer(object):
 
         name = [self.name]
 
-        for arg in args:
+        for arg in sorted(args):
             arg_name = (
                 arg if not self.abbreviate else 
                 ''.join([s[0] for s in arg.split('_')]))
