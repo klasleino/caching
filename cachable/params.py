@@ -1,7 +1,7 @@
 from inspect import getargspec
 
 from cachable import Cachable
-from file_names import Namer
+from cachable.file_names import Namer
 
 
 class CachableParam(Cachable):

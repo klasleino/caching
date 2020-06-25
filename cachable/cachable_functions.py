@@ -1,8 +1,8 @@
 from inspect import getargspec
 
-from cached_objects import CachedObject
-from file_names import Namer
-from loaders import PickleLoader
+from cachable.cached_objects import CachedObject
+from cachable.file_names import Namer
+from cachable.loaders import PickleLoader
 
 
 class Cachable(object):
