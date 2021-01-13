@@ -1,3 +1,5 @@
+from hashlib import blake2b
+
 
 class Namer(object):
 
@@ -5,8 +7,8 @@ class Namer(object):
             self, 
             directory=None,
             name=None,
-            max_length=245, 
-            hash_digits=16,
+            max_length=128, 
+            hash_digits=8,
             abbreviate=False, 
             abbrev_hash_digits=4):
 
@@ -63,8 +65,8 @@ class Namer(object):
         # the end of the name to better ensure uniqueness.
         if self.abbreviate:
             name += '.' + (
-                str(hash(name) % 10**self.abbrev_digits)
-                    .zfill(self.abbrev_digits))
+                blake2b(name.encode('utf-8'), digest_size=self.abbrev_digits)
+                    .hexdigest())
 
         # Check if the file name is too long. In this case, we need to replace
         # it with the hash of the name. We only do this when the name is too
@@ -72,7 +74,8 @@ class Namer(object):
         if len(name) > self.max_length:
             name = '{}.{}'.format(
                 self.name,
-                str(hash(name) % 10**self.hash_digits).zfill(self.hash_digits))
+                blake2b(name.encode('utf-8'), digest_size=self.hash_digits)
+                    .hexdigest())
 
         return name
         
